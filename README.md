@@ -6,7 +6,6 @@
 ![Kotlin](https://img.shields.io/badge/Kotlin-2.0-purple?logo=kotlin)
 ![Jetpack Compose](https://img.shields.io/badge/Jetpack%20Compose-latest-blue?logo=jetpack-compose)
 ![API](https://img.shields.io/badge/Min%20SDK-API%2036-brightgreen)
-![License](https://img.shields.io/badge/License-MIT-yellow)
 
 ---
 
