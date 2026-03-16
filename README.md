@@ -94,12 +94,6 @@ This follows **Clean Architecture** principles — data flows one way, each laye
 - JDK 17+
 - Android device or emulator running API 36
 
-### Clone & Run
-```bash
-git clone https://github.com/YOUR_USERNAME/FieldNotes.git
-cd FieldNotes
-```
-
 Open the project in Android Studio, let Gradle sync, then hit **Run ▶️**.
 
 ---

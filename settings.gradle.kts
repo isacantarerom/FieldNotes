@@ -24,4 +24,3 @@ dependencyResolutionManagement {
 
 rootProject.name = "field-notes"
 include(":app")
- 

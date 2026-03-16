@@ -1,7 +1,7 @@
 package com.example.field_notes.data.local
 
 import androidx.room.Entity
-import androidx.room.PimaryEntity
+import androidx.room.PrimaryKey
 
 @Entity(tableName = "notes")
 data class NoteEntity(
