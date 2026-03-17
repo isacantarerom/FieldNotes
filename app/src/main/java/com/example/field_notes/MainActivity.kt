@@ -4,44 +4,57 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.ViewModelProvider
+import com.example.field_notes.data.local.NoteDatabase
+import com.example.field_notes.data.repository.NoteRepository
+import com.example.field_notes.ui.screens.home.AddNoteScreen
+import com.example.field_notes.ui.screens.home.HomeScreen
+import com.example.field_notes.ui.screens.home.NoteViewModel
 import com.example.field_notes.ui.theme.FieldnotesTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        // Wire up the database → repository → viewmodel
+        val database = NoteDatabase.getDatabase(this)
+        val repository = NoteRepository(database.noteDao())
+        val viewModelFactory = object : ViewModelProvider.Factory {
+            override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
+                @Suppress("UNCHECKED_CAST")
+                return NoteViewModel(repository) as T
+            }
+        }
+
         setContent {
             FieldnotesTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+                AppNavigation(viewModelFactory)
             }
         }
     }
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+fun AppNavigation(factory: ViewModelProvider.Factory) {
+    val viewModel: NoteViewModel = viewModel(factory = factory)
+    var showAddScreen by remember { mutableStateOf(false) }
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    FieldnotesTheme {
-        Greeting("Android")
+    if (showAddScreen) {
+        AddNoteScreen(
+            viewModel = viewModel,
+            onNavigateBack = { showAddScreen = false }
+        )
+    } else {
+        HomeScreen(
+            viewModel = viewModel,
+            onAddNote = { showAddScreen = true }
+        )
     }
 }
