@@ -1,7 +1,5 @@
 package com.example.field_notes.ui.screens.home
 
-
-import android.icu.number.NumberFormatter
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -32,14 +30,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
-import androidx.room.util.TableInfo
 import com.example.field_notes.domain.model.Note
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen (
     viewModel: NoteViewModel,
-    onAddNote: () -> Unit
+    onAddNote: () -> Unit,
+    onEditNote: (Note) -> Unit
 ) {
     val notes by viewModel.notes.collectAsState()
 
@@ -98,7 +96,8 @@ fun HomeScreen (
                         },
                         onDelete = {
                             viewModel.deleteNote(note)
-                        }
+                        },
+                        onEditNote = { onEditNote(note) }
                     )
                 }
             }
@@ -111,9 +110,11 @@ fun HomeScreen (
 fun NoteCard(
     note: Note,
     onToggleComplete: () -> Unit,
-    onDelete: () -> Unit
+    onDelete: () -> Unit,
+    onEditNote: () -> Unit
 ) {
     Card(
+        onClick = { onEditNote() },
         modifier = Modifier.fillMaxWidth()
     ) {
         Row(

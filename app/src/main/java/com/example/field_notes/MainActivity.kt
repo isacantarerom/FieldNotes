@@ -17,6 +17,8 @@ import com.example.field_notes.ui.screens.home.AddNoteScreen
 import com.example.field_notes.ui.screens.home.HomeScreen
 import com.example.field_notes.ui.screens.home.NoteViewModel
 import com.example.field_notes.ui.theme.FieldnotesTheme
+import com.example.field_notes.domain.model.Note
+import com.example.field_notes.ui.screens.home.EditNoteScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,16 +47,32 @@ class MainActivity : ComponentActivity() {
 fun AppNavigation(factory: ViewModelProvider.Factory) {
     val viewModel: NoteViewModel = viewModel(factory = factory)
     var showAddScreen by remember { mutableStateOf(false) }
+    var noteToEdit by remember { mutableStateOf<Note?>(null) }
 
-    if (showAddScreen) {
-        AddNoteScreen(
-            viewModel = viewModel,
-            onNavigateBack = { showAddScreen = false }
-        )
-    } else {
-        HomeScreen(
-            viewModel = viewModel,
-            onAddNote = { showAddScreen = true }
-        )
+    when {
+        showAddScreen -> {
+            AddNoteScreen(
+                viewModel = viewModel,
+                onNavigateBack = { showAddScreen = false }
+            )
+        }
+        noteToEdit != null -> {
+            EditNoteScreen(
+                note = noteToEdit!!,
+                viewModel = viewModel,
+                onNavigateBack = { noteToEdit = null }
+            )
+        }
+        else -> {
+            HomeScreen(
+                viewModel = viewModel,
+                onAddNote = { showAddScreen = true },
+                onEditNote = { note -> noteToEdit = note}
+            )
+        }
     }
+
+
+
+
 }
