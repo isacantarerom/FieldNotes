@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -35,6 +36,7 @@ fun EditNoteScreen (
 ) {
     var title by remember { mutableStateOf(note.title) }
     var body by remember { mutableStateOf(note.body) }
+    var selectedColor by remember { mutableLongStateOf(note.color) }
 
     Scaffold(
         topBar = {
@@ -65,6 +67,10 @@ fun EditNoteScreen (
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true
             )
+            ColorPicker(
+                selectedColor = selectedColor,
+                onColorSelected = { selectedColor = it }
+            )
             OutlinedTextField(
                 value = body,
                 onValueChange = { body = it },
@@ -80,7 +86,8 @@ fun EditNoteScreen (
                         viewModel.updateNote(
                             note.copy(
                                 title = title.trim(),
-                                body = body.trim()
+                                body = body.trim(),
+                                color = selectedColor
                             )
                         )
                         onNavigateBack()

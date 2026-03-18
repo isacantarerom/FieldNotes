@@ -38,7 +38,8 @@ fun NoteEntity.toNote(): Note {
         title = title,
         body = body,
         isCompleted = isCompleted,
-        createdAt = createdAt
+        createdAt = createdAt,
+        color = color
     )
 }
 
@@ -48,7 +49,8 @@ fun Note.toEntity(): NoteEntity {
         title = title,
         body = body,
         isCompleted = isCompleted,
-        createdAt = createdAt
+        createdAt = createdAt,
+        color = color
     )
 }
 

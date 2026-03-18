@@ -1,9 +1,12 @@
 package com.example.field_notes.domain.model
 
+import androidx.compose.ui.graphics.Color
+
 data class Note(
     val id: Int = 0,
     val title: String,
     val body: String,
     val isCompleted: Boolean = false,
-    val createdAt: Long = System.currentTimeMillis()
+    val createdAt: Long = System.currentTimeMillis(),
+    val color: Long = 0xFFFFFFFF
 )

@@ -22,6 +22,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.field_notes.domain.model.Note
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.ui.draw.clip
+import androidx.room.util.copy
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,6 +43,7 @@ fun AddNoteScreen(
 ) {
     var title by remember { mutableStateOf("") }
     var body by remember { mutableStateOf("") }
+    var selectedColor by remember { mutableLongStateOf(noteColors.first()) }
 
     Scaffold(
         topBar = {
@@ -61,6 +74,10 @@ fun AddNoteScreen(
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true
             )
+            ColorPicker(
+                selectedColor = selectedColor,
+                onColorSelected = { selectedColor = it }
+            )
             OutlinedTextField(
                 value = body,
                 onValueChange = { body = it },
@@ -76,7 +93,8 @@ fun AddNoteScreen(
                         viewModel.insertNote(
                             Note(
                                 title = title.trim(),
-                                body = body.trim()
+                                body = body.trim(),
+                                color = selectedColor
                             )
                         )
                         onNavigateBack()
@@ -86,6 +104,34 @@ fun AddNoteScreen(
             ) {
                 Text("Save Note")
             }
+        }
+    }
+}
+
+@Composable
+fun ColorPicker(
+    selectedColor : Long,
+    onColorSelected: (Long) -> Unit
+) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        noteColors.forEach { color ->
+            Box(
+                modifier = Modifier
+                    .size(36.dp)
+                    .clip(CircleShape)
+                    .background(color.toComposeColor())
+                    .border(
+                        width = if(selectedColor == color) 3.dp else 1.dp,
+                        color = if(selectedColor == color) MaterialTheme.colorScheme.primary
+                        else
+                            MaterialTheme.colorScheme.outline,
+                        shape = CircleShape
+                    )
+                    .clickable { onColorSelected(color) }
+            )
         }
     }
 }
