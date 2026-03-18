@@ -57,14 +57,14 @@ fun AddNoteScreen(
             OutlinedTextField(
                 value = title,
                 onValueChange = { title = it },
-                label = { Text("Title") },
+                label = { Text("Here's to a brilliant title.") },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true
             )
             OutlinedTextField(
                 value = body,
                 onValueChange = { body = it },
-                label = { Text("Note") },
+                label = { Text("Type your awesome note here...") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f),

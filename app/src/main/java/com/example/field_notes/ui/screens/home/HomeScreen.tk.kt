@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -54,23 +55,52 @@ fun HomeScreen (
             }
         }
     ) { paddingValues ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
-            contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(notes, key = { it.id }) { note ->
-                NoteCard(
-                    note = note,
-                    onToggleComplete = {
-                        viewModel.updateNote(note.copy(isCompleted = !note.isCompleted))
-                    },
-                    onDelete = {
-                        viewModel.deleteNote(note)
-                    }
-                )
+        if(notes.isEmpty()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(paddingValues),
+                contentAlignment = Alignment.Center
+            ) {
+                Column (
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        text = "📋",
+                        style = MaterialTheme.typography.displayLarge
+                    )
+                    Text(
+                        text = "No notes yet...",
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    Text(
+                        text = "Tap + to create your first note",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+        }
+        else {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
+                contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(notes, key = { it.id }) { note ->
+                    NoteCard(
+                        note = note,
+                        onToggleComplete = {
+                            viewModel.updateNote(note.copy(isCompleted = !note.isCompleted))
+                        },
+                        onDelete = {
+                            viewModel.deleteNote(note)
+                        }
+                    )
+                }
             }
         }
     }

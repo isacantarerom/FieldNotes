@@ -27,8 +27,15 @@ Built as a learning project to explore the modern Android development stack: **K
 - [ ] 💾 Offline-first — all data stored locally with Room DB
 
 ### Stretch Goals (v2.0)
+
+    🔲 Empty state (show a message when no notes exist)
+    🔲 Edit existing notes (tap a note to open it)
+    🔲 Add colors to notes
+    🔲 Animations when adding/deleting notes
+    🔲 Search/filter notes
+
+### Stretch Goals (v3.0)
 - [ ] 🏷️ Tag / categorize notes
-- [ ] 🔍 Search and filter notes
 - [ ] 📅 Add due dates and reminders
 - [ ] 🌙 Dark mode support (Material 3)
 - [ ] 📤 Export notes as plain text
