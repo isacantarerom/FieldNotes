@@ -30,10 +30,15 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ColorScheme
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.FilterChip
+import com.example.field_notes.domain.model.NoteCategory
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.ui.draw.clip
 import androidx.room.util.copy
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -44,6 +49,7 @@ fun AddNoteScreen(
     var title by remember { mutableStateOf("") }
     var body by remember { mutableStateOf("") }
     var selectedColor by remember { mutableLongStateOf(noteColors.first()) }
+    var selectedCategory by remember { mutableStateOf(NoteCategory.NOTES) }
 
     Scaffold(
         topBar = {
@@ -78,6 +84,10 @@ fun AddNoteScreen(
                 selectedColor = selectedColor,
                 onColorSelected = { selectedColor = it }
             )
+            CategoryPicker(
+                selectedCategory = selectedCategory,
+                onCategorySelected = { selectedCategory = it }
+            )
             OutlinedTextField(
                 value = body,
                 onValueChange = { body = it },
@@ -94,7 +104,8 @@ fun AddNoteScreen(
                             Note(
                                 title = title.trim(),
                                 body = body.trim(),
-                                color = selectedColor
+                                color = selectedColor,
+                                category = selectedCategory
                             )
                         )
                         onNavigateBack()
@@ -134,4 +145,33 @@ fun ColorPicker(
             )
         }
     }
+}
+
+@Composable
+fun CategoryPicker(
+    selectedCategory: NoteCategory,
+    onCategorySelected: (NoteCategory) -> Unit
+) {
+    LazyRow(
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        items(NoteCategory.entries) { category ->
+            FilterChip(
+                selected = selectedCategory == category,
+                onClick = { onCategorySelected(category) },
+                label = { Text(category.toDisplayName()) }
+            )
+        }
+    }
+}
+
+fun NoteCategory.toDisplayName(): String = when (this) {
+    NoteCategory.NOTES -> "📝 Notes"
+    NoteCategory.HOME -> "🏠 Home"
+    NoteCategory.GROCERIES -> "🛒 Groceries"
+    NoteCategory.WORK -> "💼 Work"
+    NoteCategory.TODO -> "✅ To Do"
+    NoteCategory.APPOINTMENTS -> "📅 Appointments"
+    NoteCategory.VACATION -> "✈️ Vacation"
+    NoteCategory.REMINDERS -> "🔔 Reminders"
 }

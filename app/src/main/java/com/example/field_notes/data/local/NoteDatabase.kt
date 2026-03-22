@@ -9,7 +9,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 
 @Database(
     entities = [NoteEntity::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 
@@ -20,20 +20,20 @@ abstract class NoteDatabase : RoomDatabase() {
     companion object {
         @Volatile
         private var INSTANCE: NoteDatabase? = null
-        /*val mig = object : Migration(1, 1) {
+        val mig = object : Migration(1, 2) {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL(
                     "ALTER TABLE notes ADD COLUMN color INTEGER NOT NULL DEFAULT ${0xFFFFFFFF.toLong()}"
                 )
             }
-        }*/
+        }
         fun getDatabase(context: Context) : NoteDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     NoteDatabase::class.java,
                     "notes_database"
-                )//.addMigrations(mig)
+                ).addMigrations(mig)
                     .build()
                 INSTANCE = instance
                 instance

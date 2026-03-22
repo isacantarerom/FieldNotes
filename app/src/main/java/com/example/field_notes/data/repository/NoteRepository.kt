@@ -3,6 +3,7 @@ package com.example.field_notes.data.repository
 import com.example.field_notes.data.local.NoteDao
 import com.example.field_notes.data.local.NoteEntity
 import com.example.field_notes.domain.model.Note
+import com.example.field_notes.domain.model.NoteCategory
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -39,7 +40,8 @@ fun NoteEntity.toNote(): Note {
         body = body,
         isCompleted = isCompleted,
         createdAt = createdAt,
-        color = color
+        color = color,
+        category = NoteCategory.valueOf(category)
     )
 }
 
@@ -50,7 +52,8 @@ fun Note.toEntity(): NoteEntity {
         body = body,
         isCompleted = isCompleted,
         createdAt = createdAt,
-        color = color
+        color = color,
+        category = category.name
     )
 }
 

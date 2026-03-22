@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.unit.dp
 import com.example.field_notes.domain.model.Note
+import kotlinx.coroutines.selects.select
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -37,6 +38,7 @@ fun EditNoteScreen (
     var title by remember { mutableStateOf(note.title) }
     var body by remember { mutableStateOf(note.body) }
     var selectedColor by remember { mutableLongStateOf(note.color) }
+    var selectedCategory by remember { mutableStateOf(note.category) }
 
     Scaffold(
         topBar = {
@@ -71,6 +73,10 @@ fun EditNoteScreen (
                 selectedColor = selectedColor,
                 onColorSelected = { selectedColor = it }
             )
+            CategoryPicker(
+                selectedCategory = selectedCategory,
+                onCategorySelected = { selectedCategory = it }
+            )
             OutlinedTextField(
                 value = body,
                 onValueChange = { body = it },
@@ -87,7 +93,8 @@ fun EditNoteScreen (
                             note.copy(
                                 title = title.trim(),
                                 body = body.trim(),
-                                color = selectedColor
+                                color = selectedColor,
+                                category = selectedCategory
                             )
                         )
                         onNavigateBack()

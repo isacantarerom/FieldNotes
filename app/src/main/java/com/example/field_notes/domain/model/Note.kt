@@ -8,5 +8,6 @@ data class Note(
     val body: String,
     val isCompleted: Boolean = false,
     val createdAt: Long = System.currentTimeMillis(),
-    val color: Long = 0xFFFFFFFF
+    val color: Long = 0xFFFFFFFF,
+    val category: NoteCategory = NoteCategory.NOTES
 )
