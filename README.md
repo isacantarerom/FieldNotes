@@ -18,27 +18,26 @@ Built as a learning project to explore the modern Android development stack: **K
 ---
 
 ## ✨ Features
+### MVP (v1.0) ✅ COMPLETE
+- [x] 📝 Create notes with a title and body
+- [x] 📋 View all notes in a scrollable list
+- [x] ✅ Mark notes/tasks as complete
+- [x] 🗑️ Delete notes (swipe to dismiss)
+- [x] 💾 Offline-first — all data stored locally with Room DB
 
-### MVP (v1.0)
-- [ ] 📝 Create notes with a title and body
-- [ ] 📋 View all notes in a scrollable list
-- [ ] ✅ Mark notes/tasks as complete
-- [ ] 🗑️ Delete notes (swipe to dismiss)
-- [ ] 💾 Offline-first — all data stored locally with Room DB
+### v2.0 ✅ COMPLETE
+- [x] 📭 Empty state when no notes exist
+- [x] ✏️ Edit existing notes (tap to open)
+- [x] 🎨 Color coded notes
+- [x] ✨ Animations when adding/deleting notes
+- [x] 🔍 Search notes by title
+- [x] 🏷️ Filter notes by category
 
-### Stretch Goals (v2.0)
-
-    🔲 Empty state (show a message when no notes exist)
-    🔲 Edit existing notes (tap a note to open it)
-    🔲 Add colors to notes
-    🔲 Animations when adding/deleting notes
-    🔲 Search/filter notes
-
-### Stretch Goals (v3.0)
-- [ ] 🏷️ Tag / categorize notes
+### v3.0 (Future)
 - [ ] 📅 Add due dates and reminders
 - [ ] 🌙 Dark mode support (Material 3)
 - [ ] 📤 Export notes as plain text
+- [ ] ☁️ Sync notes across devices
 
 ---
 

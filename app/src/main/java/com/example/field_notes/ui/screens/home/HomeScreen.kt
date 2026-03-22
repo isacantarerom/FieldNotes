@@ -24,6 +24,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
+import androidx.compose.material3.FilterChip
 import androidx.compose.animation.slideInVertically
 import androidx.compose.runtime.remember
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -46,7 +47,11 @@ import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.background
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.OutlinedTextField
 import com.example.field_notes.domain.model.Note
+import com.example.field_notes.domain.model.NoteCategory
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -56,6 +61,8 @@ fun HomeScreen (
     onEditNote: (Note) -> Unit
 ) {
     val notes by viewModel.notes.collectAsState()
+    val searchQuery by viewModel.searchQuery.collectAsState()
+    val selectedCategory by viewModel.selectedCategory.collectAsState()
 
     Scaffold(
         topBar = {
@@ -69,96 +76,110 @@ fun HomeScreen (
             }
         }
     ) { paddingValues ->
-        if(notes.isEmpty()) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(paddingValues),
-                contentAlignment = Alignment.Center
-            ) {
-                Column (
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            SearchBar(
+                query = searchQuery,
+                onQueryChange = { viewModel.searchQuery.value = it }
+            )
+            CategoryFilterRow(
+                selectedCategory = selectedCategory,
+                onCategorySelected = { viewModel.selectedCategory.value = it }
+            )
+            if(notes.isEmpty()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(paddingValues),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = "📋",
-                        style = MaterialTheme.typography.displayLarge
-                    )
-                    Text(
-                        text = "No notes yet...",
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                    Text(
-                        text = "Tap + to create your first note",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                    Column (
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text(
+                            text = "📋",
+                            style = MaterialTheme.typography.displayLarge
+                        )
+                        Text(
+                            text = "No notes yet...",
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                        Text(
+                            text = "Tap + to create your first note",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                 }
             }
-        }
-        else {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues),
-                contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(notes, key = { it.id }) { note ->
-                    var visible by remember { mutableStateOf(false) }
-                    LaunchedEffect(note.id) { visible = true }
+            else {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues),
+                    contentPadding = PaddingValues(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(notes, key = { it.id }) { note ->
+                        var visible by remember { mutableStateOf(false) }
+                        LaunchedEffect(note.id) { visible = true }
 
-                    AnimatedVisibility(
-                        visible = visible,
-                        enter = slideInVertically(
-                            initialOffsetY = { it },
-                            animationSpec = tween(300)
-                        ) + fadeIn(animationSpec = tween(300)),
-                    ) {
-                        val dismissState = rememberSwipeToDismissBoxState(
-                            confirmValueChange = { value ->
-                                if(value == SwipeToDismissBoxValue.EndToStart) {
-                                    viewModel.deleteNote(note)
-                                    true
-                                } else false
-                            }
-                        )
-                        SwipeToDismissBox(
-                            state = dismissState,
-                            enableDismissFromStartToEnd = false,
-                            backgroundContent = {
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(4.dp)
-                                        .clip(MaterialTheme.shapes.medium)
-                                        .background(Color.Red),
-                                    contentAlignment = Alignment.CenterEnd
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.Delete,
-                                        contentDescription = "Delete",
-                                        tint = Color.White,
-                                        modifier = Modifier.padding(end = 16.dp)
-                                    )
-                                }
-                            }
+                        AnimatedVisibility(
+                            visible = visible,
+                            enter = slideInVertically(
+                                initialOffsetY = { it },
+                                animationSpec = tween(300)
+                            ) + fadeIn(animationSpec = tween(300)),
                         ) {
-                            NoteCard(
-                                note = note,
-                                modifier = Modifier.animateItem(),
-                                onToggleComplete = {
-                                    viewModel.updateNote(note.copy(isCompleted = !note.isCompleted))
-                                },
-                                onDelete = {
-                                    viewModel.deleteNote(note)
-                                },
-                                onEditNote = { onEditNote(note) }
+                            val dismissState = rememberSwipeToDismissBoxState(
+                                confirmValueChange = { value ->
+                                    if(value == SwipeToDismissBoxValue.EndToStart) {
+                                        viewModel.deleteNote(note)
+                                        true
+                                    } else false
+                                }
                             )
+                            SwipeToDismissBox(
+                                state = dismissState,
+                                enableDismissFromStartToEnd = false,
+                                backgroundContent = {
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .padding(4.dp)
+                                            .clip(MaterialTheme.shapes.medium)
+                                            .background(Color.Red),
+                                        contentAlignment = Alignment.CenterEnd
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Delete,
+                                            contentDescription = "Delete",
+                                            tint = Color.White,
+                                            modifier = Modifier.padding(end = 16.dp)
+                                        )
+                                    }
+                                }
+                            ) {
+                                NoteCard(
+                                    note = note,
+                                    modifier = Modifier.animateItem(),
+                                    onToggleComplete = {
+                                        viewModel.updateNote(note.copy(isCompleted = !note.isCompleted))
+                                    },
+                                    onDelete = {
+                                        viewModel.deleteNote(note)
+                                    },
+                                    onEditNote = { onEditNote(note) }
+                                )
+                            }
                         }
+
+
                     }
-
-
                 }
             }
         }
@@ -214,6 +235,49 @@ fun NoteCard(
             IconButton(onClick = onDelete) {
                 Icon(Icons.Default.Delete, contentDescription = "Delete Note")
             }
+        }
+    }
+}
+
+@Composable
+fun SearchBar(
+    query : String,
+    onQueryChange: (String) -> Unit
+) {
+    OutlinedTextField(
+        value = query,
+        onValueChange = onQueryChange,
+        placeholder = { Text ("🔍 Search notes...") },
+        modifier = Modifier.
+        fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        singleLine = true,
+        shape = RoundedCornerShape(24.dp)
+    )
+}
+
+@Composable
+fun CategoryFilterRow(
+    selectedCategory: NoteCategory?,
+    onCategorySelected: (NoteCategory?) -> Unit
+) {
+    LazyRow(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = PaddingValues(horizontal = 16.dp)
+    ) {
+        item {
+            FilterChip(
+                selected = selectedCategory == null,
+                onClick = { onCategorySelected(null) },
+                label = { Text("🗂️ All") }
+            )
+        }
+        items(NoteCategory.entries) { category ->
+            FilterChip(
+                selected =  selectedCategory == category,
+                onClick = { onCategorySelected(category) },
+                label = { Text(category.toDisplayName()) }
+            )
         }
     }
 }
