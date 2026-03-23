@@ -33,7 +33,7 @@ Built as a learning project to explore the modern Android development stack: **K
 - [x] 🔍 Search notes by title
 - [x] 🏷️ Filter notes by category
 
-### v3.0 (Future)
+### v3.0 (Future)4
 - [ ] 📅 Add due dates and reminders
 - [ ] 🌙 Dark mode support (Material 3)
 - [ ] 📤 Export notes as plain text

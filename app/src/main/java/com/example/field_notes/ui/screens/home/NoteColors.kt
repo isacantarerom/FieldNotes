@@ -15,3 +15,11 @@ val noteColors = listOf (
 
 fun Long.toComposeColor(): Color = Color(this)
 
+fun Long.contentColorFor(): Color {
+    val color = Color(this)
+    val red = color.red * 0.299f
+    val green = color.green * 0.587f
+    val blue = color.blue * 0.114f
+    val luminance = red + green + blue
+    return if (luminance > 0.5f) Color.Black else Color.White
+}

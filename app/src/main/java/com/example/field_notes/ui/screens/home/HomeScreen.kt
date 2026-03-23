@@ -17,6 +17,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -210,7 +211,12 @@ fun NoteCard(
         ) {
             Checkbox(
                 checked = note.isCompleted,
-                onCheckedChange = {onToggleComplete()}
+                onCheckedChange = {onToggleComplete()},
+                colors = CheckboxDefaults.colors(
+                    checkmarkColor = note.color.contentColorFor(),
+                    uncheckedColor = note.color.contentColorFor(),
+                    checkedColor = note.color.contentColorFor().copy(alpha = 0.5f)
+                )
             )
             Column(
                 modifier = Modifier
@@ -220,6 +226,7 @@ fun NoteCard(
                 Text(
                     text = note.title,
                     style = MaterialTheme.typography.titleMedium,
+                    color = note.color.contentColorFor(),
                     textDecoration = if (note.isCompleted)
                         TextDecoration.LineThrough else TextDecoration.None
                 )
@@ -227,13 +234,18 @@ fun NoteCard(
                     Text(
                         text = note.body,
                         style = MaterialTheme.typography.titleMedium,
+                        color = note.color.contentColorFor(),
                         textDecoration = if(note.isCompleted)
                             TextDecoration.LineThrough else TextDecoration.None
                     )
                 }
             }
             IconButton(onClick = onDelete) {
-                Icon(Icons.Default.Delete, contentDescription = "Delete Note")
+                Icon(
+                    Icons.Default.Delete,
+                    contentDescription = "Delete Note",
+                    tint = note.color.contentColorFor()
+                    )
             }
         }
     }
