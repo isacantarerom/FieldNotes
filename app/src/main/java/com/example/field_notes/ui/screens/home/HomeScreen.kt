@@ -15,6 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
@@ -48,6 +49,7 @@ import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.background
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.OutlinedTextField
@@ -64,6 +66,7 @@ fun HomeScreen (
     val notes by viewModel.notes.collectAsState()
     val searchQuery by viewModel.searchQuery.collectAsState()
     val selectedCategory by viewModel.selectedCategory.collectAsState()
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -171,10 +174,9 @@ fun HomeScreen (
                                     onToggleComplete = {
                                         viewModel.updateNote(note.copy(isCompleted = !note.isCompleted))
                                     },
-                                    onDelete = {
-                                        viewModel.deleteNote(note)
-                                    },
-                                    onEditNote = { onEditNote(note) }
+                                    onDelete = { viewModel.deleteNote(note) },
+                                    onEditNote = { onEditNote(note) },
+                                    onShare = { shareNote(context, note) }
                                 )
                             }
                         }
@@ -187,18 +189,23 @@ fun HomeScreen (
     }
 }
 
-
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun NoteCard(
     note: Note,
     onToggleComplete: () -> Unit,
     onDelete: () -> Unit,
     onEditNote: () -> Unit,
+    onShare: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
-        onClick = { onEditNote() },
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .combinedClickable(
+                onClick = { onEditNote() },
+                onLongClick = { onShare() }
+            ),
         colors = CardDefaults.cardColors(
             containerColor = note.color.toComposeColor()
         )
@@ -292,4 +299,26 @@ fun CategoryFilterRow(
             )
         }
     }
+}
+
+fun shareNote(context: android.content.Context, note: Note) {
+    val text = buildString {
+        appendLine( "📋 ${note.title}")
+        if(note.body.isNotBlank()){
+            appendLine()
+            appendLine(note.body)
+        }
+        appendLine()
+        appendLine("Category: ${note.category.toDisplayName()}")
+        appendLine("Status: ${if (note.isCompleted) "✅ Complete" else "⏳ Pending"}")
+    }
+
+    val intent = android.content.Intent(android.content.Intent.ACTION_SEND).apply {
+        type = "text/plain"
+        putExtra(android.content.Intent.EXTRA_SUBJECT, note.title)
+        putExtra(android.content.Intent.EXTRA_TEXT, text)
+    }
+    context.startActivity(
+        android.content.Intent.createChooser(intent, "Share note via...")
+    )
 }
