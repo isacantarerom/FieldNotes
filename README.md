@@ -34,9 +34,9 @@ Built as a learning project to explore the modern Android development stack: **K
 - [x] 🏷️ Filter notes by category
 
 ### v3.0 (Future)4
-- [ ] 📅 Add due dates and reminders
-- [ ] 🌙 Dark mode support (Material 3)
-- [ ] 📤 Export notes as plain text
+- [x] 📅 Add due dates and reminders
+- [x] 🌙 Dark mode support (Material 3)
+- [x] 📤 Export notes as plain text
 - [ ] ☁️ Sync notes across devices
 
 ---

@@ -9,5 +9,6 @@ data class Note(
     val isCompleted: Boolean = false,
     val createdAt: Long = System.currentTimeMillis(),
     val color: Long = 0xFFFFFFFF,
-    val category: NoteCategory = NoteCategory.NOTES
+    val category: NoteCategory = NoteCategory.NOTES,
+    val dueDate: Long? = null
 )

@@ -41,7 +41,8 @@ fun NoteEntity.toNote(): Note {
         isCompleted = isCompleted,
         createdAt = createdAt,
         color = color,
-        category = NoteCategory.valueOf(category)
+        category = NoteCategory.valueOf(category),
+        dueDate = dueDate
     )
 }
 
@@ -53,7 +54,8 @@ fun Note.toEntity(): NoteEntity {
         isCompleted = isCompleted,
         createdAt = createdAt,
         color = color,
-        category = category.name
+        category = category.name,
+        dueDate = dueDate
     )
 }
 

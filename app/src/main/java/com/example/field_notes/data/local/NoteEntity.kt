@@ -15,5 +15,6 @@ data class NoteEntity(
     val isCompleted: Boolean = false,
     val createdAt: Long = System.currentTimeMillis(),
     val color : Long = 0xFFFFFFFF,
-    val category: String = NoteCategory.NOTES.name
+    val category: String = NoteCategory.NOTES.name,
+    val dueDate: Long? = null
 )

@@ -29,17 +29,19 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.ColorScheme
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.FilterChip
 import com.example.field_notes.domain.model.NoteCategory
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
-import androidx.room.util.copy
-import java.util.Locale
-
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.TextButton
+import com.example.field_notes.ui.utils.formatDate
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddNoteScreen(
@@ -50,6 +52,7 @@ fun AddNoteScreen(
     var body by remember { mutableStateOf("") }
     var selectedColor by remember { mutableLongStateOf(noteColors.first()) }
     var selectedCategory by remember { mutableStateOf(NoteCategory.NOTES) }
+    var dueDate by remember { mutableStateOf<Long?>(null) }
 
     Scaffold(
         topBar = {
@@ -88,6 +91,10 @@ fun AddNoteScreen(
                 selectedCategory = selectedCategory,
                 onCategorySelected = { selectedCategory = it }
             )
+            DueDatePicker(
+              dueDate = dueDate,
+                onDateSelected = {dueDate = it}
+            )
             OutlinedTextField(
                 value = body,
                 onValueChange = { body = it },
@@ -105,7 +112,8 @@ fun AddNoteScreen(
                                 title = title.trim(),
                                 body = body.trim(),
                                 color = selectedColor,
-                                category = selectedCategory
+                                category = selectedCategory,
+                                dueDate = dueDate
                             )
                         )
                         onNavigateBack()
@@ -175,3 +183,57 @@ fun NoteCategory.toDisplayName(): String = when (this) {
     NoteCategory.VACATION -> "✈️ Vacation"
     NoteCategory.REMINDERS -> "🔔 Reminders"
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DueDatePicker(
+    dueDate: Long?,
+    onDateSelected: (Long?) -> Unit
+) {
+    var showPicker by remember { mutableStateOf(false) }
+    val datePickerState = rememberDatePickerState( initialSelectedDateMillis = dueDate )
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = if(dueDate != null)
+                "📅 Due: ${formatDate(dueDate)}"
+            else
+                "📅 No due date",
+            style = MaterialTheme.typography.bodyMedium
+        )
+        Row {
+            TextButton(onClick = { showPicker=true }) { Text("Set Date") }
+            if(dueDate != null) {
+                TextButton(onClick = { onDateSelected(null)}) { Text("Clear") }
+            }
+        }
+    }
+
+    if(showPicker) {
+        DatePickerDialog(
+            onDismissRequest = {showPicker = false},
+            confirmButton = {
+                TextButton(onClick = {
+                    onDateSelected(datePickerState.selectedDateMillis)
+                    showPicker = false
+                }) {
+                    Text("Ok")
+                }
+            },
+            dismissButton = {
+                TextButton( onClick = { showPicker = false} ){
+                    Text("Cancel")
+                }
+            }
+        ) {
+            DatePicker(state = datePickerState)
+        }
+    }
+}
+

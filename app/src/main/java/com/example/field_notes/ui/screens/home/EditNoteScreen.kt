@@ -22,10 +22,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.layout
 import androidx.compose.ui.unit.dp
 import com.example.field_notes.domain.model.Note
-import kotlinx.coroutines.selects.select
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -39,6 +37,7 @@ fun EditNoteScreen (
     var body by remember { mutableStateOf(note.body) }
     var selectedColor by remember { mutableLongStateOf(note.color) }
     var selectedCategory by remember { mutableStateOf(note.category) }
+    var dueDate by remember { mutableStateOf<Long?>(note.dueDate) }
 
     Scaffold(
         topBar = {
@@ -77,6 +76,10 @@ fun EditNoteScreen (
                 selectedCategory = selectedCategory,
                 onCategorySelected = { selectedCategory = it }
             )
+            DueDatePicker(
+              dueDate = dueDate,
+                onDateSelected = { dueDate = it }
+            )
             OutlinedTextField(
                 value = body,
                 onValueChange = { body = it },
@@ -94,7 +97,8 @@ fun EditNoteScreen (
                                 title = title.trim(),
                                 body = body.trim(),
                                 color = selectedColor,
-                                category = selectedCategory
+                                category = selectedCategory,
+                                dueDate = dueDate
                             )
                         )
                         onNavigateBack()

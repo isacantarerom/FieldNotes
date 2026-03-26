@@ -55,6 +55,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.OutlinedTextField
 import com.example.field_notes.domain.model.Note
 import com.example.field_notes.domain.model.NoteCategory
+import com.example.field_notes.ui.utils.formatDate
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -245,6 +246,13 @@ fun NoteCard(
                         textDecoration = if(note.isCompleted)
                             TextDecoration.LineThrough else TextDecoration.None
                     )
+                    note.dueDate?.let { date ->
+                        Text(
+                            text = "📅 ${formatDate(date)}",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = note.color.contentColorFor().copy(alpha = 0.7f)
+                        )
+                    }
                 }
             }
             IconButton(onClick = onDelete) {
