@@ -10,6 +10,7 @@ import com.example.field_notes.domain.model.NoteCategory
 data class NoteEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
+    val remoteId: String? = null,
     val title: String,
     val body: String,
     val isCompleted: Boolean = false,

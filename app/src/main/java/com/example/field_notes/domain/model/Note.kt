@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Color
 
 data class Note(
     val id: Int = 0,
+    val remoteId: String? = null,
     val title: String,
     val body: String,
     val isCompleted: Boolean = false,

@@ -2,7 +2,6 @@ package com.example.field_notes.data.remote
 
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.postgrest
-import io.github.jan.supabase.postgrest.query.Columns
 import android.R.attr.id
 
 class NoteRemoteDataSource {
@@ -30,7 +29,7 @@ class NoteRemoteDataSource {
             }
     }
 
-    suspend fun delete(note: NoteDto) {
+    suspend fun delete(note: String) {
         client.postgrest[table]
             .delete {
                 filter {

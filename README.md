@@ -41,7 +41,7 @@ Built as a learning project to explore the modern Android development stack: **K
 - [x] 📤 Export/share notes as plain text
 
 ### v4.0 — Cloud Sync (IN PROGRESS)
-- [ ] 🔐 User authentication (sign up / log in)
+- [x] 🔐 User authentication (sign up / log in)
 - [ ] ☁️ Sync notes to Supabase cloud database
 - [ ] 📡 Real-time updates across devices
 - [ ] 🔄 Offline-first with background sync

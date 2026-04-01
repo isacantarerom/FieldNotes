@@ -25,6 +25,7 @@ data class NoteDto(
 
 fun NoteDto.toNote() : Note {
     return Note(
+        remoteId = id,
         title = title,
         body = body,
         isCompleted = isCompleted,
@@ -37,6 +38,7 @@ fun NoteDto.toNote() : Note {
 
 fun Note.toDto(userId: String): NoteDto {
     return NoteDto (
+        id = remoteId,
         title = title,
         body = body,
         isCompleted = isCompleted,

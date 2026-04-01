@@ -22,6 +22,16 @@ interface NoteDao{
 
     @Delete
     suspend fun deleteNote(note: NoteEntity)
+
+    @Query("SELECT * FROM notes WHERE remoteId = :remoteId LIMIT 1")
+    suspend fun getNoteByRemoteId(remoteId: String) : NoteEntity?
+
+    @Insert
+    suspend fun insertNoteAndGetId(note: NoteEntity): Long
+
+    @Query("UPDATE notes SET remoteId = :remoteId WHERE id = :localId")
+    suspend fun updateRemoteId(localId: Int, remoteId: String)
+
 }
 
 
