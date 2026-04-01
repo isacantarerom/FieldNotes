@@ -40,7 +40,7 @@ Built as a learning project to explore the modern Android development stack: **K
 - [x] 🌙 Dark mode support (Material 3)
 - [x] 📤 Export/share notes as plain text
 
-### v4.0 — Cloud Sync (IN PROGRESS)
+### v4.0 — Cloud Sync ✅ COMPLETE 
 - [x] 🔐 User authentication (sign up / log in)
 - [x] ☁️ Sync notes to Supabase cloud database
 - [x] 📡 Real-time updates across devices
