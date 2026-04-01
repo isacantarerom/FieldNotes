@@ -71,6 +71,7 @@ fun AppNavigation(factory: ViewModelProvider.Factory) {
                     navController.navigate("home") {
                         popUpTo("login") { inclusive = true }
                     }
+                    viewModel.syncNotes()
                 },
                 onNavigateToSignUp = {
                     navController.navigate("signup")
@@ -84,6 +85,7 @@ fun AppNavigation(factory: ViewModelProvider.Factory) {
                     navController.navigate("home") {
                         popUpTo("login") { inclusive = true }
                     }
+                    viewModel.syncNotes()
                 },
                 onNavigateToLogin = {
                     navController.navigateUp()

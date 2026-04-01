@@ -42,9 +42,9 @@ Built as a learning project to explore the modern Android development stack: **K
 
 ### v4.0 — Cloud Sync (IN PROGRESS)
 - [x] 🔐 User authentication (sign up / log in)
-- [ ] ☁️ Sync notes to Supabase cloud database
-- [ ] 📡 Real-time updates across devices
-- [ ] 🔄 Offline-first with background sync
+- [x] ☁️ Sync notes to Supabase cloud database
+- [x] 📡 Real-time updates across devices
+- [x] 🔄 Offline-first with background sync
 
 ---
 

@@ -24,17 +24,29 @@ class NoteRepository(
     }
 
     suspend fun syncNotes() {
-        val userId = remoteDataSource.getCurrentUserId() ?: return
+        val userId = remoteDataSource.getCurrentUserId()
+        android.util.Log.d("FieldNotes", "🔄 syncNotes called, userId: $userId")
+
+        if (userId == null) {
+            android.util.Log.d("FieldNotes", "❌ No user, skipping sync")
+            return
+        }
+
         try {
             val remoteNotes = remoteDataSource.getAllNotes()
+            android.util.Log.d("FieldNotes", "📦 Remote notes fetched: ${remoteNotes.size}")
+
             remoteNotes.forEach { dto ->
+                android.util.Log.d("FieldNotes", "📝 Processing remote note: ${dto.id} - ${dto.title}")
                 val existing = noteDao.getNoteByRemoteId(dto.id!!)
+                android.util.Log.d("FieldNotes", "🔍 Existing local note: $existing")
                 if (existing == null) {
                     noteDao.insertNote(dto.toNote().toEntity())
+                    android.util.Log.d("FieldNotes", "✅ Inserted locally: ${dto.title}")
                 }
             }
         } catch (e: Exception) {
-            // Offline — silently skip
+            android.util.Log.e("FieldNotes", "💥 syncNotes failed: ${e.message}", e)
         }
     }
 
