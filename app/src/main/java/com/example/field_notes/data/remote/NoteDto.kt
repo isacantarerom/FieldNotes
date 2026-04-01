@@ -39,6 +39,7 @@ fun NoteDto.toNote() : Note {
 fun Note.toDto(userId: String): NoteDto {
     return NoteDto (
         id = remoteId,
+        userId = userId,
         title = title,
         body = body,
         isCompleted = isCompleted,

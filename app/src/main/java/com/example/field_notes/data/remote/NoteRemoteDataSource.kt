@@ -2,7 +2,6 @@ package com.example.field_notes.data.remote
 
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.postgrest
-import android.R.attr.id
 
 class NoteRemoteDataSource {
     private val client = SupabaseClient.client
@@ -14,10 +13,9 @@ class NoteRemoteDataSource {
             .decodeList<NoteDto>()
     }
 
-    suspend fun insertNote(note: NoteDto) : NoteDto {
-        return client.postgrest[table]
+    suspend fun insertNote(note: NoteDto) {
+        client.postgrest[table]
             .insert(note)
-            .decodeSingle<NoteDto>()
     }
 
     suspend fun updateNote(note: NoteDto) {
@@ -29,17 +27,16 @@ class NoteRemoteDataSource {
             }
     }
 
-    suspend fun delete(note: String) {
+    suspend fun delete(remoteId: String) {
         client.postgrest[table]
             .delete {
                 filter {
-                    eq("id", id)
+                    eq("id", remoteId)
                 }
             }
     }
 
-    fun getCurrentUserId() : String? {
+    fun getCurrentUserId(): String? {
         return client.auth.currentUserOrNull()?.id
     }
-
 }

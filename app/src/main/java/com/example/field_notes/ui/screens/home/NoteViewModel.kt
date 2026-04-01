@@ -60,5 +60,14 @@ class NoteViewModel (private val repository: NoteRepository) : ViewModel() {
         }
     }
 
+    fun syncNotes() {
+        viewModelScope.launch {
+            repository.syncNotes()
+        }
+    }
+
+    init {
+        syncNotes()
+    }
 
 }

@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-
 class NoteRepository(
     private val noteDao: NoteDao,
     private val remoteDataSource: NoteRemoteDataSource = NoteRemoteDataSource()
@@ -24,37 +23,39 @@ class NoteRepository(
         }
     }
 
-    //Fetch remote notes and sync into local Room db
     suspend fun syncNotes() {
         val userId = remoteDataSource.getCurrentUserId() ?: return
         try {
             val remoteNotes = remoteDataSource.getAllNotes()
             remoteNotes.forEach { dto ->
                 val existing = noteDao.getNoteByRemoteId(dto.id!!)
-                if(existing == null) {
-                    //new note from remote, insert local
+                if (existing == null) {
                     noteDao.insertNote(dto.toNote().toEntity())
                 }
             }
         } catch (e: Exception) {
-            //We are offline TBD if show something to the user
+            // Offline — silently skip
         }
     }
 
     suspend fun insertNote(note: Note) {
-        //Save local first
         val localId = noteDao.insertNoteAndGetId(note.toEntity())
+        android.util.Log.d("FieldNotes", "✅ Saved locally with id: $localId")
 
-        //Sync to Supabase in background
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val userId = remoteDataSource.getCurrentUserId() ?: return@launch
-                val dto = remoteDataSource.insertNote(note.toDto(userId))
+                val userId = remoteDataSource.getCurrentUserId()
+                android.util.Log.d("FieldNotes", "👤 Current user id: $userId")
 
-                //Save the remote UUID to local note
-                noteDao.updateRemoteId(localId.toInt(), dto.id!!)
+                if (userId == null) {
+                    android.util.Log.d("FieldNotes", "❌ No user logged in, skipping remote insert")
+                    return@launch
+                }
+
+                remoteDataSource.insertNote(note.toDto(userId))
+                android.util.Log.d("FieldNotes", "☁️ Saved to Supabase!")
             } catch (e: Exception) {
-                //TBD sync failed
+                android.util.Log.e("FieldNotes", "💥 Remote insert failed: ${e.message}", e)
             }
         }
     }
@@ -62,13 +63,12 @@ class NoteRepository(
     suspend fun updateNote(note: Note) {
         noteDao.updateNote(note.toEntity())
 
-        //Sync to supabase on background
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val userId = remoteDataSource.getCurrentUserId() ?: return@launch
-                if(note.remoteId != null) remoteDataSource.updateNote(note.toDto(userId))
+                if (note.remoteId != null) remoteDataSource.updateNote(note.toDto(userId))
             } catch (e: Exception) {
-                //TBD
+                // TBD
             }
         }
     }
@@ -76,23 +76,17 @@ class NoteRepository(
     suspend fun deleteNote(note: Note) {
         noteDao.deleteNote(note.toEntity())
 
-        //Sync to supabase in bg
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                if(note.remoteId != null) {
+                if (note.remoteId != null) {
                     remoteDataSource.delete(note.remoteId)
                 }
             } catch (e: Exception) {
-                //TBD
+                // TBD
             }
         }
     }
 }
-
-//Mapper function:
-// Small app / few models  →  mappers in the same file, fine
-// Large app / many models →  dedicated NoteMappers.kt makes more sense
-
 
 fun NoteEntity.toNote(): Note {
     return Note(
@@ -121,11 +115,3 @@ fun Note.toEntity(): NoteEntity {
         dueDate = dueDate
     )
 }
-
-
-
-/* THIS file is the middleman between Note and NoteEntity! 🎉
-
-The Repository only speaks Note to the outside world, and only speaks NoteEntity to the database.
-Nobody else needs to know about the translation.
- */
